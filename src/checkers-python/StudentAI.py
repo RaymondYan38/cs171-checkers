@@ -6,7 +6,7 @@ from BoardClasses import Board
 #Students can modify anything except the class name and exisiting functions and varibles.
 NUM_SIMULATIONS = 100
 
-class Node:
+class TreeNode:
     def __init__(self, state, move):
         # Initialize a node with the given game state.
         self.state = state  # Represents the game state
@@ -116,14 +116,9 @@ class StudentAI():
                     max_win_rate = win_rate
                     best_move = child.move
         return best_move
-
-    def get_move(self, move):
-        if len(move) != 0:
-            self.board.make_move(move,self.opponent[self.color])
-        else:
-            self.color = 1
-        # MCTS Algorithm
-        root_node = Node(self.board, None)  # Create a root node representing the current game state
+    
+    def monte_carlo_tree_search(self):
+        root_node = TreeNode(self.board, None)  # Create a root node representing the current game state
 
         for _ in range(NUM_SIMULATIONS):
             # Selection phase
@@ -134,7 +129,7 @@ class StudentAI():
             if selected_node is not None and not selected_node.is_fully_expanded():
                 unexplored_move = selected_node.get_unexplored_move()
                 new_state = selected_node.simulate_move(unexplored_move)
-                new_node = Node(new_state, unexplored_move)
+                new_node = TreeNode(new_state, unexplored_move)
                 selected_node.add_child(new_node)
 
             # Simulation phase
@@ -149,6 +144,17 @@ class StudentAI():
         self.board.make_move(best_move, self.color)
 
         return best_move
+    
+
+    def get_move(self, move):
+        if len(move) != 0:
+            self.board.make_move(move,self.opponent[self.color])
+        else:
+            self.color = 1
+        
+        self.monte_carlo_tree_search
+
+        # This is the old code that was provided that just made a random move:
         # moves = self.board.get_all_possible_moves(self.color)
         # index = randint(0,len(moves)-1)
         # inner_index =  randint(0,len(moves[index])-1)
