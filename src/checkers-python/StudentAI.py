@@ -7,9 +7,10 @@ from BoardClasses import Board
 NUM_SIMULATIONS = 100
 
 class Node:
-    def __init__(self, state):
+    def __init__(self, state, move):
         # Initialize a node with the given game state.
         self.state = state  # Represents the game state
+        self.move = move  # Store the move that led to this node
         self.parent = None  # Reference to the parent node
         self.children = []  # List of child nodes
         self.wins = 0  # Number of wins from this node
@@ -40,7 +41,7 @@ class Node:
 
 class StudentAI():
 
-    def __init__(self,col,row,p):
+    def __init__(self, col, row, p):
         self.col = col
         self.row = row
         self.p = p
@@ -82,7 +83,7 @@ class StudentAI():
 
             possible_moves = current_state.get_all_possible_moves(self.color)
             if not possible_moves:
-                return 0  # The game is a draw
+                return -1  # The game is a draw
 
             random_move = random.choice(possible_moves)
             current_state.make_move(random_move)
@@ -91,13 +92,15 @@ class StudentAI():
     # Backpropagation phase
         while node is not None:
             node.visits += 1
-            # Adjust wins based on the result from simulate
-            if result == -1:  # Tie
-                node.wins += 0  # No win points for a tie
-            elif result == 2:  # Your AI ("W") has won
-                node.wins += 1  # +1 for a win
-            elif result == 1:  # Your AI ("W") has lost
-                node.wins -= 1  # -1 for a loss
+            
+            # Check if your AI (self.color) has won
+            if result == self.color:
+                node.wins += 1  # Increment wins if your AI has won
+
+            # Check if your AI (self.color) has lost
+            if result == self.opponent[self.color]:
+                node.wins -= 1  # Decrement wins if your AI has lost
+
             node = node.parent
 
 
@@ -111,33 +114,33 @@ class StudentAI():
                 win_rate = child.wins / child.visits
                 if win_rate > max_win_rate:
                     max_win_rate = win_rate
-                    best_move = child.state.get_last_move()
+                    best_move = child.move
         return best_move
 
-    def get_move(self,move):
+    def get_move(self, move):
         if len(move) != 0:
             self.board.make_move(move,self.opponent[self.color])
         else:
             self.color = 1
         # MCTS Algorithm
-        root_node = Node(self.board)  # Create a root node representing the current game state
+        root_node = Node(self.board, None)  # Create a root node representing the current game state
 
         for _ in range(NUM_SIMULATIONS):
             # Selection phase
             selected_node = self.selection(root_node)
 
             # Expansion phase
-            if not selected_node.is_fully_expanded():
+            new_node = None
+            if selected_node is not None and not selected_node.is_fully_expanded():
                 unexplored_move = selected_node.get_unexplored_move()
                 new_state = selected_node.simulate_move(unexplored_move)
-                new_node = Node(new_state)
+                new_node = Node(new_state, unexplored_move)
                 selected_node.add_child(new_node)
 
             # Simulation phase
-            result = self.simulate(new_node)
-
-            # Backpropagation phase
-            self.backpropagate(new_node, result)
+            if new_node is not None:
+                result = self.simulate(new_node)
+                self.backpropagate(new_node, result)
 
         # Decision phase: Choose the best move
         best_move = self.choose_best_move(root_node)
