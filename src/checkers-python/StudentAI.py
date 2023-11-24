@@ -6,73 +6,6 @@ import sys
 import math
 #The following part should be completed by students.
 #Students can modify anything except the class name and exisiting functions and varibles.
-# class StudentAI():
-
-#     def __init__(self,col,row,p):
-#         self.col = col
-#         self.row = row
-#         self.p = p
-#         self.board = Board(col,row,p)
-#         self.board.initialize_game()
-#         self.color = ''
-#         self.opponent = {1:2,2:1}
-#         self.color = 2
-#     def get_move(self,move):
-        
-#         if len(move) != 0:
-#             self.board.make_move(move,self.opponent[self.color])
-#         else:
-#             self.color = 1
-#         moves = self.board.get_all_possible_moves(self.color) #This is a 2D list, first dimension is the checker that can be moved, 2nd dimension is a list of Move objects which represent possible moves for the checker that can move I THINK
-#         index = randint(0,len(moves)-1)
-#         inner_index =  randint(0,len(moves[index])-1)
-#         move = moves[index][inner_index] #according to EdDiscussion, I find a random checker to move (represented by "index") and "inner_index" is a random move that random checker can make
-#         self.board.make_move(move,self.color)
-#         return move #Move Object that AI will return to make a move
-#-------------- MIN-MAX ---------------------------------------
-
-# class StudentAI():
-
-#     def __init__(self,col,row,p):
-#         self.col = col
-#         self.row = row
-#         self.p = p
-#         self.board = Board(col,row,p)
-#         self.board.initialize_game()
-#         self.color = ''
-#         self.opponent = {1:2,2:1}
-#         self.color = 2
-
-#     def MaxVal(self, boardState, movesList):
-#         if not movesList:
-#             return
-#         else:
-#             #we have possible moves
-#             util = -float("inf") #negative utility
-#             considered_move = None
-#             for checker in movesList:
-#                 for m in checker:
-#                     util_2 = len(m)
-#                     if util_2 > util:
-#                         util = util_2
-#                         considered_move = m
-#             return considered_move
-        
-#     def get_move(self,move):
-        
-#         if len(move) != 0:
-#             self.board.make_move(move,self.opponent[self.color])
-#         else:
-#             self.color = 1
-#         moves = self.board.get_all_possible_moves(self.color) #This is a 2D list, first dimension is the checker that can be moved, 2nd dimension is a list of Move objects which represent possible moves for the checker that can move I THINK
-#         # index = randint(0,len(moves)-1)
-#         # inner_index =  randint(0,len(moves[index])-1)
-#         move = self.MaxVal(self.board, moves)#moves[index][inner_index] #according to EdDiscussion, I find a random checker to move (represented by "index") and "inner_index" is a random move that random checker can make
-#         self.board.make_move(move,self.color)
-#         return move #Move Object that AI will return to make a move
-#--------------------------------------------------------------
-
-#-------------------------------------------------------------
 #---------------- MONTE CARLO TREE SEARCH --------------------
 NUM_SIMULATIONS = 100
 
@@ -267,6 +200,7 @@ POTENTIAL ISSUE: down the line of execution, what I predict to cause problems
 FIX: A plan I have to fix what I find to be an issue
 EDIT/EDITED: I changed the code (usually goes with FIX, but might not, so don't count on these 2 being together)
 COMMENT OUT/COMMENT OUT ABOVE: I thought the code was unneeded
+DELETE: Remember to delete before final submission
 
 TIME with MCTS (AND C VALUE):
 - ITERATIONS: 
@@ -286,4 +220,10 @@ TIME with MCTS (AND C VALUE):
 Side Notes:
 MCTS shouldn't take that long, make sure we run thru overview of MCTS and compare with code
 
+Suggested edits, from various sources (DELETE)
+- Rather than running simulations for all children produced during Expansion, run one simulation at a time (Ihler)
+- Don't always expand upon reaching any leaf node, but check to see if the leaf node we ended up in has been visited multiple times. 
+After visiting said leaf node a certain number of times (set to some arbitrary constant number of times), then expand it and find its children. (Ihler)
+- Run and calculate a certain number of simulations and average the results to backpropagate (Alicia)
+- Save the tree for the next set of turns in the game (Kask)
 '''
