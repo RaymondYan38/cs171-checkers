@@ -69,7 +69,7 @@ import math
 #         # inner_index =  randint(0,len(moves[index])-1)
 #         move = self.MaxVal(self.board, moves)#moves[index][inner_index] #according to EdDiscussion, I find a random checker to move (represented by "index") and "inner_index" is a random move that random checker can make
 #         self.board.make_move(move,self.color)
-#         return move #Move Object that AI will return to make a move
+        # return move #Move Object that AI will return to make a move
 #--------------------------------------------------------------
 
 #-------------------------------------------------------------
@@ -401,6 +401,7 @@ class StudentAI():
                 exploitation = child.wins / child.visits 
                 exploration = C * math.sqrt(math.log(node.visits) / child.visits) #That's the UCT equation
                 uct_value = exploitation + exploration
+                child.uct_value = uct_value
 
             if uct_value > max_uct:
                 max_uct = uct_value
@@ -433,12 +434,13 @@ class StudentAI():
 
             index = randint(0,len(m)-1)
             inner_index =  randint(0,len(m[index])-1)
-            # maxCapMove = self.MaxVal(m)
+            #maxCapMove = self.MaxVal(m)
             random_move = m[index][inner_index]
             current_state.make_move(random_move,current_color_response)
+            
             # if maxCapMove == None:
                 # break
-            # current_state.make_move(maxCapMove, current_color_response)
+            #current_state.make_move(maxCapMove, current_color_response)
             
             current_color_response = node.opponent[current_color_response] #to switch the color for the next turn WITHIN the simulated play
             m = current_state.get_all_possible_moves(current_color_response)
@@ -452,7 +454,7 @@ class StudentAI():
             node.visits += 1
             
             # Check if your AI (self.color) has won
-            if result == self.color:
+            if result == node.color: #EDIT: Originally, it was result = self.color, but that increments node.wins of all nodes, whether ours or the opponentss, which throws off the win rates
                 node.wins += 1  # Increment wins if your AI has won
 
                         
